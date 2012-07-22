@@ -1,4 +1,6 @@
-jquery-autocomplete
+jQuery.liveSearch.js
 ===================
 
-A jQuery plugin to provide autocomplete functionality to your applications
+[DISCLAIMER] This plugin is still under development. Full release coming soon.
+
+A jQuery plugin to provide you with good-looking live search functionality for your applications.
