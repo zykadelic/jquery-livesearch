@@ -6,8 +6,9 @@
  * 
  * TODO:
  * Key navigations
- * Enable selection in results-list (like autocomplete)
- * Support multiple selections in results-list (optional)
+ * Act on keyDown rather than keyUp for a more snappy feel
+ * Enable selection in results-list, like autocomplete
+ * Support multiple selections in results-list [optional]
  */
 
 (function($){
