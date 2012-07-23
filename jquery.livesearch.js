@@ -5,7 +5,6 @@
  * Dependencies: $.tmpl (optional) - https://github.com/jquery/jquery-tmpl
  * 
  * TODO:
- * Accept "protected" custom success/error events (wrapped in the AJAX success/error callbacks)
  * Key navigations
  * Enable selection in results-list (like autocomplete)
  * Support multiple selections in results-list (optional)
@@ -94,15 +93,32 @@
 				}else{
 					_t.hideResultsList
 				}
-			
-				// Send AJAX request with specified settings except for some explicit, required overridings
-				$.ajax($.extend(_t.settings.request, {
+				
+				// Store the custom callbacks so that we can intelligently override and re-call them
+				var callbacks = {
+					success: _t.settings.request.success,
+					error: _t.settings.request.error
+				}
+				
+				var request = $.extend(_t.settings.request, {
+					// Send the data with an added query parameter
 					data: $.extend(_t.settings.request.data, { query: query }),
+					
+					// Override the success callback, and then re-call it from the request object, so that we can perform our callbacks first
 					success: function(data, status, xhr){
 						_t.settings.resultsList.removeClass('loading')
 						_t._renderResults(data)
+						callbacks.success(data, status, xhr)
+					},
+					
+					// Same here - override the error callback and call it again after we have performed our callbacks
+					error: function(xhr, status, data){
+						_t.settings.resultsList.removeClass('loading')
+						callbacks.error(xhr, status, data)
 					}
-				}))
+				})
+				
+				$.ajax(request)
 			},
 			
 			_renderResults: function(results){
@@ -152,20 +168,27 @@
 	
 	
 	$.fn.liveSearch = function(options){
-		// Set default settings and override with provided ones
+		// Set the default request and extend with options (if provided)
+		// We do this here in order to avoid overwriting the entire object from options
+		var request = $.extend({
+			type:			'GET',
+			dataType:	'JSON',
+			url:			this.parents('form').attr('action'),
+			data:			{},
+			success:	function(data, status, xhr){},
+			error:		function(xhr, status, data){ alert(status) }
+		}, options ? options.request : undefined)
+		
+		// Set default settings and override with provided ones (except the request object)
 		var settings = $.extend({
 			considerSpaces:	false,
 			resultsList:		$('.jquery-livesearch-results'),
 			template:				false,
-			noResultsText:	'No results found',
-			request: {
-				type:			'GET',
-				dataType:	'JSON',
-				url:			this.parents('form').attr('action'),
-				data:			{},
-				error:		function(xhr, status, data){ alert(data) }
-			}
+			noResultsText:	'No results found'
 		}, options)
+		
+		// Overwrite the overwriting request object here (if provided by options), with our nicely merged one
+		settings.request = request
 		
 		return this.each(function(){
 			new methods().init($(this), settings)
