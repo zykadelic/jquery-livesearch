@@ -5,7 +5,6 @@
  * Dependencies: $.tmpl (optional) - https://github.com/jquery/jquery-tmpl
  * 
  * TODO:
- * Remove browser-default autofill (if possible)
  * Accept "protected" custom success/error events (wrapped in the AJAX success/error callbacks)
  * Key navigations
  * Enable selection in results-list (like autocomplete)
@@ -21,7 +20,10 @@
 				var _t = this
 				_t.element = el, _t.settings = settings
 				_t._runValidations()
-			
+				
+				// Disable browser's autocomplete for inputs
+				_t.element.attr('autocomplete', 'off')
+				
 				// Transform resultsList to ul element if it's not already
 				if(!_t.settings.resultsList.is('ul')){
 					// Store all attributes of the resultsList
