@@ -31,34 +31,34 @@
 					$.each(_t.settings.resultsList[0].attributes, function(_, attr){
 						attrs[attr.nodeName] = attr.nodeValue
 					})
-				
+					
 					// Replace resultsList with ul element and apply all of the stored attributes
 					var resultsList = $('<ul>', attrs)
 					_t.settings.resultsList.replaceWith(resultsList)
 					_t.settings.resultsList = resultsList
 				}
-			
+				
 				// Run keyUp method on keyup event
 				_t.element.on('keyup.liveSearch', function(key){ _t.keyUp(key) })
-			
+				
 				// Only show results on focus if there is a value in the element (space sensitive)
 				_t.element.on('focus.liveSearch', function(){
 					if(_t.settings.considerSpaces ? $(this).val() : $(this).val().trim()) _t.showResultsList()
 				})
-			
+				
 				// Hide results on blur
 				_t.element.on('blur.liveSearch', function(){ _t.hideResultsList() })
-			
+				
 				// Don't display results on initiation
 				_t.hideResultsList
 			},
-		
+			
 			keyUp: function(key){
 				// Read and write previous value, as a property, from the element
 				var previousValue	= this.element.prop('previousValue') || ''
 				var currentValue	= this.element.val()
 				this.element.prop('previousValue', currentValue)
-			
+				
 				// Consider keypressings that don't necessarily input anything (Shift, Alt...)
 				if(previousValue != currentValue){
 					// Apply for running a search if value isn't empty (space sensitive) - else hide the results
@@ -70,23 +70,23 @@
 					}
 				}
 			},
-		
+			
 			hideResultsList: function(){
 				this.settings.resultsList.css('display', 'none')
 			},
-		
+			
 			showResultsList: function(){
 				this.settings.resultsList.css('display', 'block')
 			},
-		
-		
+			
+			
 			// Private methods
-		
+			
 			_search: function(query){
 				var _t = this
 				// Trim the query of whitespace unless spaces are set to be taken into consideration
 				if(!_t.settings.considerSpaces) query = query.trim().replace(/\s+/gi, ' ')
-			
+				
 				// Toggle visibility on list depending on query value
 				if(query){
 					_t.showResultsList()
@@ -104,7 +104,7 @@
 					}
 				}))
 			},
-		
+			
 			_renderResults: function(results){
 				var _t = this, body = ''
 				if(results.length){
@@ -117,7 +117,7 @@
 							if(typeof result == "object") _t.throwError('Response was of type Object, but no text/html-template was specified')
 							resultItem = $('<li>').html(result)
 						}
-					
+						
 						// Extract HTML as a string and add it to the html variable (ugly, but works...)
 						body += $("<div>").html(resultItem).html()
 					})
@@ -125,15 +125,15 @@
 					// No results was returned - render the noResultsText unless it's false (hidden)
 					if(_t.settings.noResultsText) body = $('<li>').addClass('empty').html(_t.settings.noResultsText)
 				}
-			
+				
 				// Insert the sum of the cardamum to the resultsList
 				_t.settings.resultsList.html(body)
 			},
-		
+			
 			_runValidations: function(){
 				if(!this.settings.request.url) this._throwError('Request URL is not specified')
 				if(!this.settings.resultsList.length) this._throwError('Can\'t find resultsList element')
-			
+				
 				if(this.settings.template){
 					if(!this.settings.template.length) this._throwError('Can\'t find HTML-template')
 					var type = this.settings.template[0].type
@@ -142,7 +142,7 @@
 					if(!$.tmpl) this._throwError('Use of HTML templates require the jQuery.tmpl plugin. Download at http://github.com/jquery/jquery-tmpl')
 				}
 			},
-		
+			
 			_throwError: function(error){
 				throw new Error('[jQuery liveSearch] ' + error)
 			}
