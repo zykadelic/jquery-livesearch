@@ -38,6 +38,17 @@
 					_t.settings.resultsList = resultsList
 				}
 				
+				// Add .hover to hovered list item instead of using :hover (for key navigations to work smoother)
+				$(_t.settings.resultsList.selector + ' li').live('mouseenter.liveSearch', function(){
+					// Remove .hover from all list items, if keynav has been used to add .hover to something else
+					$(_t.settings.resultsList.selector + ' li').removeClass('hover')
+					$(this).addClass('hover')
+				})
+				
+				$(_t.settings.resultsList.selector + ' li').live('mouseleave.liveSearch', function(){
+					$(this).removeClass('hover')
+				})
+				
 				// Only show results on focus if there is a value in the element (space sensitive)
 				_t.element.on('focus.liveSearch', function(){
 					if(_t.settings.considerSpaces ? $(this).val() : $(this).val().trim()) _t.showResultsList()
