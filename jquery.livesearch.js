@@ -123,6 +123,7 @@
 					}
 				})
 				
+				// Clean motherf*****!
 				$.ajax(request)
 			},
 			
