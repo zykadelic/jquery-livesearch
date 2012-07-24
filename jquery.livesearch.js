@@ -58,18 +58,18 @@
 				
 				switch(key.keyCode){
 					case 27: // Escape
-						if(this.settings.blurOnEscape) this.element.blur()
+						if(_t.settings.blurOnEscape) _t.element.blur()
 						break
 					
 					default:
 						// Consider keypressings that don't necessarily input anything (Shift, Alt...)
 						if(previousValue != currentValue){
 							// Apply for running a search if value isn't empty (space sensitive) - else hide the results
-							if(this.settings.considerSpaces ? currentValue : currentValue.trim()){
+							if(_t.settings.considerSpaces ? currentValue : currentValue.trim()){
 								// Unless spaces are considered, don't run the search when space key is hit
-								if(key.keyCode != 32 || this.settings.considerSpaces) this._search(currentValue)
+								if(key.keyCode != 32 || _t.settings.considerSpaces) _t._search(currentValue)
 							}else{
-								this.hideResultsList()
+								_t.hideResultsList()
 							}
 						}
 				}
