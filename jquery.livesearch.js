@@ -5,7 +5,6 @@
  * Dependencies: $.tmpl (optional) - https://github.com/jquery/jquery-tmpl
  * 
  * TODO:
- * Act on keyDown rather than keyUp for a more snappy feel
  * Enable selection in results-list, like autocomplete
  * Support multiple selections in results-list [optional]
  */
@@ -53,8 +52,12 @@
 					if(_t.settings.considerSpaces ? $(this).val() : $(this).val().trim()) _t.showResultsList()
 				})
 				
-				// Run keyUp method on keyup event
-				_t.element.live('keyup.liveSearch', function(key){ _t.keyUp(key) })
+				// Run keypress with the character as argument - used for search queries
+				_t.element.live('keypress.liveSearch', function(key){ _t.keypress(String.fromCharCode(key.charCode)) })
+				
+				// Hook a keydown event to catch key navigations that keypress doesn't
+				_t.element.live('keydown.liveSearch', function(key){ _t.keydown(key) })
+				
 				
 				// Hide results on blur
 				_t.element.live('blur.liveSearch', function(){ _t.hideResultsList() })
@@ -63,38 +66,46 @@
 				_t.hideResultsList
 			},
 			
-			keyUp: function(key){
-				var _t = this
-				
+			// Catches only characters, used for queries
+			keypress: function(_char){
 				// Read and write previous value, as a property, from the element
-				var previousValue	= _t.element.prop('previousValue') || ''
-				var currentValue	= _t.element.val()
-				_t.element.prop('previousValue', currentValue)
+				var previousValue	= this.element.prop('previousValue') || ''
+				var currentValue	= this.element.val() + _char
+				this.element.prop('previousValue', currentValue)
 				
+				// If value (space sensitive) isn't blank - apply for running a search, else hide the results
+				if(this.settings.considerSpaces ? currentValue : currentValue.trim()){
+					// Unless spaces are considered, don't run the search when space key is hit
+					if(_char != ' ' || this.settings.considerSpaces) this._search(currentValue)
+				}else{
+					this.hideResultsList()
+				}
+			},
+			
+			// Catches all keys, but only care for key navigations
+			keydown: function(key){
 				switch(key.keyCode){
 					case 40: // Down arrow
-						_t._keynav('down')
-						break
+						this._keynav('down')
+					break
 					
 					case 38: // Up arrow
-						_t._keynav('up')
-						break
+						this._keynav('up')
+					break
 					
 					case 27: // Escape
-						if(_t.settings.blurOnEscape) _t.element.blur()
-						break
+						if(this.settings.blurOnEscape) this.element.blur()
+					break
 					
-					default:
-						// Consider keypressings that don't necessarily input anything (Shift, Alt...)
-						if(previousValue != currentValue){
-							// If value (space sensitive) isn't blank - apply for running a search, else hide the results
-							if(_t.settings.considerSpaces ? currentValue : currentValue.trim()){
-								// Unless spaces are considered, don't run the search when space key is hit
-								if(key.keyCode != 32 || _t.settings.considerSpaces) _t._search(currentValue)
-							}else{
-								_t.hideResultsList()
-							}
-						}
+					case 8: // Backspace
+						// Manually invoke search (bypassing keypress) with the last character removed, since this is a keydown event
+						this._search(this.element.val().slice(0, -1))
+					break
+					
+					case 46: // Delete
+						// Same as case 8 (backspace)
+						this._search(this.element.val().slice(0, -1))
+					break
 				}
 			},
 			
@@ -119,7 +130,7 @@
 					_t.showResultsList()
 					_t.settings.resultsList.addClass('loading')
 				}else{
-					_t.hideResultsList
+					_t.hideResultsList()
 				}
 				
 				// Store the custom callbacks so that we can intelligently override and re-call them
