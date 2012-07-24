@@ -83,9 +83,10 @@
 						this._keynav('up')
 					break
 					
-					case 13: // Enter
-						// TODO Enable selection in resultsList for an autocomplete-like feel
-					break
+					// TODO Enable selection in resultsList for an autocomplete-like feel
+					// case 13: // Enter
+					// 	
+					// break
 					
 					case 27: // Escape
 						if(this.settings.blurOnEscape) this.element.blur()
