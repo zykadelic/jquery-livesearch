@@ -5,7 +5,6 @@
  * Dependencies: $.tmpl (optional) - https://github.com/jquery/jquery-tmpl
  * 
  * TODO:
- * Key navigations
  * Act on keyDown rather than keyUp for a more snappy feel
  * Enable selection in results-list, like autocomplete
  * Support multiple selections in results-list [optional]
@@ -73,6 +72,14 @@
 				_t.element.prop('previousValue', currentValue)
 				
 				switch(key.keyCode){
+					case 40: // Down arrow
+						_t._keynav('down')
+						break
+					
+					case 38: // Up arrow
+						_t._keynav('up')
+						break
+					
 					case 27: // Escape
 						if(_t.settings.blurOnEscape) _t.element.blur()
 						break
@@ -166,6 +173,18 @@
 				
 				// Insert the sum of the cardamum to the resultsList
 				_t.settings.resultsList.html(body)
+			},
+			
+			_keynav: function(direction){
+				var firstLi		= direction == 'up' ? this.settings.resultsList.find('li').last() : this.settings.resultsList.find('li').first()
+				var currentLi	= this.settings.resultsList.find('li.hover')
+				var nextLi		= direction == 'up' ? currentLi.prev('li') : currentLi.next('li')
+				if(currentLi.length){
+					currentLi.removeClass('hover')
+					nextLi.length ? nextLi.addClass('hover') : firstLi.addClass('hover')
+				}else{
+					firstLi.addClass('hover')
+				}
 			},
 			
 			_runValidations: function(){
