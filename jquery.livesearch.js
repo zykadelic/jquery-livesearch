@@ -64,7 +64,7 @@
 					default:
 						// Consider keypressings that don't necessarily input anything (Shift, Alt...)
 						if(previousValue != currentValue){
-							// Apply for running a search if value isn't empty (space sensitive) - else hide the results
+							// If value (space sensitive) isn't blank - apply for running a search, else hide the results
 							if(_t.settings.considerSpaces ? currentValue : currentValue.trim()){
 								// Unless spaces are considered, don't run the search when space key is hit
 								if(key.keyCode != 32 || _t.settings.considerSpaces) _t._search(currentValue)
