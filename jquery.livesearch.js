@@ -41,11 +41,6 @@
 				// Run keyUp method on keyup event
 				_t.element.on('keyup.liveSearch', function(key){ _t.keyUp(key) })
 				
-				// Only show results on focus if there is a value in the element (space sensitive)
-				_t.element.on('focus.liveSearch', function(){
-					if(_t.settings.considerSpaces ? $(this).val() : $(this).val().trim()) _t.showResultsList()
-				})
-				
 				// Hide results on blur
 				_t.element.on('blur.liveSearch', function(){ _t.hideResultsList() })
 				
