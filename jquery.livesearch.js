@@ -1,12 +1,7 @@
-/* jQuery.liveSearch.js - https://github.com/zykadelic/jquery-livesearch
+/* jQuery Live Search Plugin 1.0.0
+ * http://github.com/zykadelic/jquery-livesearch
  * 
- * Author: zykadelic - https://github.com/zykadelic
- * License: Free under MIT license
- * Dependencies: $.tmpl (optional) - https://github.com/jquery/jquery-tmpl
- * 
- * TODO:
- * Enable selection in results-list, like autocomplete
- * Support multiple selections in results-list [optional]
+ * Licensed under the GNU General Public License
  */
 
 (function($){
