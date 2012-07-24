@@ -68,13 +68,8 @@
 				var currentValue	= this.element.val() + _char
 				this.element.prop('previousValue', currentValue)
 				
-				// If value (space sensitive) isn't blank - apply for running a search, else hide the results
-				if(this.settings.considerSpaces ? currentValue : currentValue.trim()){
-					// Unless spaces are considered, don't run the search when space key is hit
-					if(_char != ' ' || this.settings.considerSpaces) this._search(currentValue)
-				}else{
-					this.hideResultsList()
-				}
+				// Unless spaces are considered, don't run the search when space key is hit
+				if(_char != ' ' || this.settings.considerSpaces) this._search(currentValue)
 			},
 			
 			// Catches all keys, but only care for key navigations
