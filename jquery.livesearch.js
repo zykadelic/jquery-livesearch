@@ -180,7 +180,8 @@
 			considerSpaces:	false,
 			resultsList:		$('.jquery-livesearch-results'),
 			template:				false,
-			noResultsText:	'No results found'
+			noResultsText:	'No results found',
+			blurOnEscape:		true
 		}, options)
 		
 		// Overwrite the overwriting request object here (if provided by options), with our nicely merged one
